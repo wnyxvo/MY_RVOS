@@ -1,11 +1,10 @@
-include ./common.mk
+include ../common.mk
 
 SRCS_ASM = \
 	start.S \
 
 SRCS_C = \
 	kernel.c \
-	uart.c \
 
 OBJS = $(SRCS_ASM:.S=.o)
 OBJS += $(SRCS_C:.c=.o)

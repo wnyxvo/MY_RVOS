@@ -1,4 +1,6 @@
+# The compilation chain runs on a 64-bit machine
 CROSS_COMPILE = riscv64-unknown-elf-
+# target system is 32-bit machine
 CFLAGS = -nostdlib -fno-builtin -march=rv32g -mabi=ilp32 -g -Wall
 
 QEMU = qemu-system-riscv32
