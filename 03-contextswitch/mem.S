@@ -1,7 +1,3 @@
-# 1 "mem.S"
-# 1 "<built-in>"
-# 1 "<command-line>"
-# 1 "mem.S"
 .section .rodata
 .global HEAP_START
 HEAP_START: .word _heap_start
