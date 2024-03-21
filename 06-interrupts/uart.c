@@ -1,5 +1,4 @@
-#include "platform.h"
-#include "types.h"
+#include "os.h"
 
 /*
  * The UART control registers are memory-mapped at address UART0. 
@@ -103,6 +102,12 @@ void uart_init()
 	 */
 	lcr = 0;
 	uart_write_reg(LCR, lcr | (3 << 0));
+
+	/*
+	 * enable receive interrupts.
+	 */
+	uint8_t ier = uart_read_reg(IER);
+	uart_write_reg(IER, ier | (1 << 0));
 }
 
 int uart_putc(char ch)
@@ -118,18 +123,27 @@ void uart_puts(char *s)
 	}
 }
 
-char uart_getc()
+int uart_getc(void)
 {
-	while ((LSR_RX_READY & uart_read_reg(LSR)) == 0);
-	return (char)uart_read_reg(RHR);
+	if (LSR_RX_READY & uart_read_reg(LSR)){
+		return uart_read_reg(RHR);
+	} else 	{
+		return -1;
+	}
 }
 
-void regression()
+/* 
+ * handle a uart interrupt, raised because input has arrived, called form trap.c 
+ */
+void uart_isr(void)
 {
-	char ch;
-	while((ch = uart_getc()) != '\r')
-	{
-		uart_putc(ch);
+	while(1){
+		int c = uart_getc();
+		if (c == -1) {
+			break;
+		} else {
+			uart_putc((char)c);
+			uart_putc('\n');
+		}
 	}
-	uart_putc('\n');
 }
